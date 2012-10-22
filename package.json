@@ -1,0 +1,15 @@
+{
+  "name": "mongo-lazy",
+  "description": "Node-mongodb-native for lazy people. Don't ever open a collection again. Eat a piece of cake while doing parallel queries.",
+  "version": "0.0.1",
+  "author": "Jie Meng-Gerard <contact@jie.fr>",
+  "repository": "git://github.com/jiem/mongo-lazy",  
+  "keywords": ["mongo", "mongodb", "mongodb-native", "db"],
+  "main": "./index.js",
+  "engines": {
+    "node": ">=0.4.0"
+  },
+  "dependencies": {
+    "mongodb": "1.0.x"
+  }
+}
