@@ -60,7 +60,7 @@ To access and manipulate the underlying mongodb-native `Db` object,
 there are 3 hooks on the mongo-lazy `db` object:
 
 * `db.close()` to close the database
-* `db.ready(listener)` to attach a listener which will be fired when `Db` is ready 
+* `db.ready(listener)` to attach a listener which will be fired when the mongodb-native `Db` is ready 
 * `db.$` which is the mongodb-native `Db` object itself (or `null` when `Db` is not ready) 
 
 
