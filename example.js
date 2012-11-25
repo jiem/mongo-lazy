@@ -27,3 +27,8 @@ db([
   console.log('Meal:\n', meal);
   console.log('Desserts:\n', desserts, '\nBon appetit!\n');  
 });
+
+// Closing DB after 3 seconds
+setTimeout(function() {
+  db.close();
+}, 3000);

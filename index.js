@@ -3,15 +3,28 @@ var mongo = require('mongodb');
 exports.open = function(a, b, c) {
     
   var COLLECTION = {};
+  var DB_READY_LISTENERS = [];
   var DB, ERROR_CALLBACK;
   
   //============================================================================
+  function addDbReadyListener(cb) {
+    DB || DB_READY_LISTENERS.push(cb);
+  }
+  
+  //============================================================================
+  function closeDb() {
+    DB && DB.close();
+  }  
+  
+  //============================================================================
   function dbReady(err, db) {
-    var coll;
+    var i, listener, coll;
     if (err) {
       ERROR_CALLBACK(err);
     } else {
-      DB = db;      
+      DB = db;    
+      for (i = 0; listener = DB_READY_LISTENERS[i]; i++)
+        listener(db);
       for (coll in COLLECTION)
         db.collection(coll, collectionReady);
     }
@@ -33,13 +46,19 @@ exports.open = function(a, b, c) {
   }
   
   //============================================================================  
-  function collection(_, coll) {
-    if (COLLECTION[coll])
-      return COLLECTION[coll];
-    COLLECTION[coll] = new Collection();    
+  function get(_, attr) {
+    if (attr === '$')
+      return DB;
+    if (attr === 'close')
+      return closeDb;
+    if (attr === 'ready')
+      return addDbReadyListener;
+    if (COLLECTION[attr])
+      return COLLECTION[attr];
+    COLLECTION[attr] = new Collection();    
     if (DB)
-      DB.collection(coll, collectionReady);
-    return COLLECTION[coll];      
+      DB.collection(attr, collectionReady);
+    return COLLECTION[attr];      
   }  
   
   //============================================================================
@@ -47,7 +66,7 @@ exports.open = function(a, b, c) {
     var general = {results: [], callback: callback, countdown: 0};
     var i, query, coll, method; 
     for (i = 0; query = queries[i]; i++) {        
-      coll = collection(null, query.shift());
+      coll = get(null, query.shift());
       method = query.shift();
       if (typeof coll[method] === 'function') {      
         query.push(createCallback(i, general));
@@ -80,7 +99,7 @@ exports.open = function(a, b, c) {
   if (!global.Proxy)
     throw new Error('run node with harmony: "node --harmony yourScript.js"')
   
-  return Proxy.createFunction({get: collection}, parallel);
+  return Proxy.createFunction({get: get}, parallel);
   
 }
 

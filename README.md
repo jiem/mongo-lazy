@@ -46,8 +46,23 @@ The --harmony flag is necessary because we're using Harmony proxies to open and 
     console.log('Meal:\n', meal);
     console.log('Desserts:\n', desserts, '\nBon appetit!\n');  
   });
+
+  // Closing DB after 3 seconds
+  setTimeout(function() {
+    db.close();
+  }, 3000);
 ```
- 
+
+## Using the underlying mongodb-native `Db` object 
+
+The documentation of the mongodb-native `Db` object is [here][1].
+To access and manipulate the underlying mongodb-native `Db` object,
+there are 3 hooks on the mongo-lazy `db` object:
+
+* `db.close()` to close the database
+* `db.ready(listener)` to attach a listener which will be fired when `Db` is ready 
+* `db.$` which is the mongodb-native `Db` object itself (or `null` when `Db` is not ready) 
+
 
 ## MIT License 
 
@@ -74,3 +89,4 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 [0]: http://mongodb.github.com/node-mongodb-native/api-generated/collection.html
+[1]: http://mongodb.github.com/node-mongodb-native/api-generated/db.html
