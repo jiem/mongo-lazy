@@ -40,8 +40,11 @@ exports.open = function(a, b, c) {
       collectionWrapper.connection = collection;
       pendingRequests = collectionWrapper.pendingRequests;
       COLLECTION[collection.collectionName] = collection;
-      for (i = 0; request = pendingRequests[i]; i++)
-        collection[request.method].apply(collection, request.arguments);
+      if (pendingRequests) {
+        pendingRequests.forEach(function (request) {
+          collection[request.method].apply(collection, request.arguments);
+        });
+      }
     }
   }
   
