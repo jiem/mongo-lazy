@@ -56,6 +56,8 @@ exports.open = function(a, b, c) {
       return closeDb;
     if (attr === 'ready')
       return addDbReadyListener;
+    if (attr === 'id')
+      return createId;
     if (COLLECTION[attr])
       return COLLECTION[attr];
     COLLECTION[attr] = new Collection();    
@@ -112,6 +114,13 @@ function Collection() {
 }
 
 //==============================================================================
+function createId(time) {
+  if (time instanceof Date)
+    time = time.getTime();
+  return mongo.ObjectID.createFromTime(Math.floor(time / 1000));
+}
+
+//==============================================================================
 function wrapper(method) {
   return function() {
     return this.connection ?
@@ -150,6 +159,12 @@ function init() {
 mongo.Collection.prototype.findAll = function() {
   var callback = Array.prototype.pop.call(arguments);
   this.find.apply(this, arguments).toArray(callback);
+}
+
+//==============================================================================
+mongo.Collection.prototype.each = function() {
+  var callback = Array.prototype.pop.call(arguments);
+  this.find.apply(this, arguments).each(callback);
 }
 
 //==============================================================================
