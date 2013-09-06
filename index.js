@@ -114,10 +114,12 @@ function Collection() {
 }
 
 //==============================================================================
-function createId(time) {
-  if (time instanceof Date)
-    time = time.getTime();
-  return mongo.ObjectID.createFromTime(Math.floor(time / 1000));
+function createId(x) {
+  if (typeof x === 'string')
+    return new mongo.ObjectID(x);
+  if (x instanceof Date)
+    x = x.getTime();
+  return mongo.ObjectID.createFromTime(Math.floor(x / 1000));
 }
 
 //==============================================================================
